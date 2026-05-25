@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DJ Carlos | Booking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --electric-purple: #8b5cf6;
+      --hot-pink: #ec4899;
+      --white: #f8fafc;
+      --muted: #cbd5e1;
+      --card: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.16);
+      --field: rgba(255, 255, 255, 0.06);
+      --field-focus: rgba(236, 72, 153, 0.2);
+      --success: #34d399;
+      --danger: #fb7185;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Manrope", sans-serif;
+      color: var(--white);
+      background: var(--bg);
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    .page-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 220;
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+      background: rgba(7, 6, 12, 0.96);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      transition: opacity 560ms ease, visibility 560ms ease;
+    }
+
+    .page-loader.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-content {
+      text-align: center;
+    }
+
+    .loader-logo {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(2.8rem, 9vw, 5rem);
+      letter-spacing: 0.1em;
+      line-height: 0.9;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      text-shadow:
+        0 0 8px rgba(236, 72, 153, 0.82),
+        0 0 24px rgba(139, 92, 246, 0.85),
+        0 0 44px rgba(236, 72, 153, 0.4);
+      animation: loaderGlow 1.5s ease-in-out infinite;
+    }
+
+    .loader-bar {
+      width: min(280px, 64vw);
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .loader-progress {
+      width: 45%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--electric-purple), var(--hot-pink));
+      animation: loaderSweep 1.05s ease-in-out infinite;
+    }
+
+    @keyframes loaderGlow {
+      0%,
+      100% {
+        text-shadow:
+          0 0 8px rgba(236, 72, 153, 0.82),
+          0 0 24px rgba(139, 92, 246, 0.85),
+          0 0 44px rgba(236, 72, 153, 0.4);
+      }
+      50% {
+        text-shadow:
+          0 0 11px rgba(236, 72, 153, 1),
+          0 0 30px rgba(139, 92, 246, 1),
+          0 0 52px rgba(236, 72, 153, 0.52);
+      }
+    }
+
+    @keyframes loaderSweep {
+      0% {
+        transform: translateX(-115%);
+      }
+      100% {
+        transform: translateX(240%);
+      }
+    }
+
+    .bg {
+      position: fixed;
+      inset: -20%;
+      z-index: -2;
+      background:
+        radial-gradient(circle at 18% 24%, rgba(139, 92, 246, 0.45), transparent 48%),
+        radial-gradient(circle at 82% 72%, rgba(236, 72, 153, 0.4), transparent 52%),
+        radial-gradient(circle at 50% 10%, rgba(236, 72, 153, 0.2), transparent 50%),
+        var(--bg);
+      filter: blur(16px) saturate(125%);
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+
+    .mesh {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 36px 36px;
+      -webkit-mask-image: radial-gradient(circle at center, black 45%, transparent 90%);
+      mask-image: radial-gradient(circle at center, black 45%, transparent 90%);
+      pointer-events: none;
+    }
+
+    @keyframes drift {
+      0% {
+        transform: translate3d(-2%, -1%, 0) scale(1);
+      }
+      50% {
+        transform: translate3d(2%, 2%, 0) scale(1.06);
+      }
+      100% {
+        transform: translate3d(-1%, 3%, 0) scale(1.02);
+      }
+    }
+
+    .container {
+      width: min(1120px, 92%);
+      margin-inline: auto;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      background: rgba(13, 13, 13, 0.58);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 74px;
+    }
+
+    .logo {
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.06em;
+      font-size: 1.4rem;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .menu {
+      display: flex;
+      gap: 1.4rem;
+      list-style: none;
+      font-weight: 700;
+    }
+
+    .menu a {
+      text-decoration: none;
+      color: var(--white);
+      opacity: 0.85;
+      transition: opacity 0.2s ease, color 0.2s ease;
+    }
+
+    .menu a:hover,
+    .menu a:focus-visible,
+    .menu a[aria-current="page"] {
+      color: var(--hot-pink);
+      opacity: 1;
+      outline: none;
+    }
+
+    .booking {
+      padding: clamp(2.4rem, 7vw, 5rem) 0 4rem;
+      display: grid;
+      gap: 1.8rem;
+      grid-template-columns: 0.95fr 1.05fr;
+      align-items: start;
+    }
+
+    .intro {
+      position: sticky;
+      top: 105px;
+    }
+
+    .kicker {
+      color: #fbcfe8;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.7rem;
+    }
+
+    h1 {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(3rem, 8vw, 5.8rem);
+      letter-spacing: 0.08em;
+      line-height: 0.9;
+      margin-bottom: 0.9rem;
+      text-shadow:
+        0 0 8px rgba(236, 72, 153, 0.8),
+        0 0 22px rgba(139, 92, 246, 0.82),
+        0 0 40px rgba(139, 92, 246, 0.45);
+      animation: glow 3s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+      0%,
+      100% {
+        text-shadow:
+          0 0 8px rgba(236, 72, 153, 0.8),
+          0 0 22px rgba(139, 92, 246, 0.82),
+          0 0 40px rgba(139, 92, 246, 0.45);
+      }
+      50% {
+        text-shadow:
+          0 0 10px rgba(236, 72, 153, 1),
+          0 0 28px rgba(139, 92, 246, 1),
+          0 0 52px rgba(139, 92, 246, 0.6);
+      }
+    }
+
+    .lead {
+      color: var(--muted);
+      max-width: 36ch;
+      margin-bottom: 1rem;
+    }
+
+    .booking-list {
+      list-style: none;
+      display: grid;
+      gap: 0.55rem;
+      color: #ddd6fe;
+      font-weight: 600;
+      margin-top: 1rem;
+    }
+
+    .booking-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--electric-purple), var(--hot-pink));
+      box-shadow: 0 0 12px rgba(236, 72, 153, 0.9);
+      flex-shrink: 0;
+    }
+
+    .form-shell {
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.03));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: clamp(1.1rem, 3vw, 1.8rem);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.16),
+        0 20px 50px rgba(0, 0, 0, 0.45);
+      transform: translateY(14px);
+      opacity: 0;
+      animation: riseIn 700ms ease forwards;
+    }
+
+    @keyframes riseIn {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 0.95rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .field {
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-weight: 700;
+      font-size: 0.94rem;
+      color: #f5d0fe;
+      letter-spacing: 0.01em;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: var(--field);
+      color: var(--white);
+      padding: 0.78rem 0.82rem;
+      font: inherit;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: rgba(203, 213, 225, 0.8);
+    }
+
+    select option {
+      color: #0f172a;
+    }
+
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+      outline: none;
+      border-color: rgba(236, 72, 153, 0.72);
+      background-color: var(--field-focus);
+      box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.22);
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    .actions {
+      margin-top: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .submit-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      border: none;
+      border-radius: 999px;
+      padding: 0.9rem 1.7rem;
+      font: inherit;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      background: linear-gradient(120deg, var(--electric-purple), var(--hot-pink));
+      box-shadow:
+        0 12px 28px rgba(139, 92, 246, 0.34),
+        0 0 24px rgba(236, 72, 153, 0.42);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+
+    .submit-btn:hover,
+    .submit-btn:focus-visible {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+      box-shadow:
+        0 16px 34px rgba(139, 92, 246, 0.4),
+        0 0 30px rgba(236, 72, 153, 0.52);
+      outline: none;
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.76;
+      cursor: wait;
+      transform: none;
+    }
+
+    .btn-spinner {
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: var(--white);
+      animation: spin 700ms linear infinite;
+      display: none;
+      flex-shrink: 0;
+    }
+
+    .submit-btn.is-loading .btn-spinner {
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .status {
+      min-height: 1.35rem;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .status.success {
+      color: var(--success);
+      text-shadow: 0 0 14px rgba(52, 211, 153, 0.4);
+      animation: successPulse 700ms ease;
+    }
+
+    @keyframes successPulse {
+      0% {
+        transform: translateY(2px);
+        opacity: 0.75;
+      }
+      55% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .status.error {
+      color: var(--danger);
+      text-shadow: 0 0 14px rgba(251, 113, 133, 0.35);
+    }
+
+    .confirmation-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.2rem;
+      background: rgba(8, 8, 12, 0.78);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+    }
+
+    .confirmation-modal.is-open {
+      display: flex;
+      animation: modalFadeIn 220ms ease;
+    }
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .confirmation-card {
+      width: min(520px, 100%);
+      border-radius: 22px;
+      padding: clamp(1.4rem, 4vw, 2rem);
+      background: linear-gradient(165deg, rgba(23, 17, 48, 0.95), rgba(15, 10, 31, 0.98));
+      border: 1px solid rgba(167, 139, 250, 0.4);
+      box-shadow:
+        0 24px 56px rgba(0, 0, 0, 0.55),
+        0 0 34px rgba(139, 92, 246, 0.34);
+      text-align: center;
+    }
+
+    .confirmation-icon {
+      width: 74px;
+      height: 74px;
+      margin: 0 auto 1rem;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #ede9fe;
+      background: radial-gradient(circle at 32% 30%, #a78bfa, #7c3aed 68%);
+      box-shadow:
+        0 0 24px rgba(139, 92, 246, 0.7),
+        inset 0 1px 6px rgba(255, 255, 255, 0.28);
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .confirmation-title {
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.05em;
+      font-size: clamp(1.9rem, 5vw, 2.4rem);
+      margin-bottom: 0.45rem;
+    }
+
+    .confirmation-body {
+      color: #ddd6fe;
+      font-size: 1rem;
+      margin-bottom: 1.35rem;
+    }
+
+    .close-modal-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 0.8rem 1.45rem;
+      font: inherit;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      background: linear-gradient(120deg, var(--electric-purple), var(--hot-pink));
+      box-shadow:
+        0 10px 26px rgba(139, 92, 246, 0.34),
+        0 0 20px rgba(236, 72, 153, 0.38);
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .close-modal-btn:hover,
+    .close-modal-btn:focus-visible {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+      outline: none;
+    }
+
+    .site-footer {
+      margin-top: 2.2rem;
+      background: rgba(10, 10, 16, 0.92);
+      border-top: 1px solid rgba(236, 72, 153, 0.42);
+      border-bottom: 1px solid rgba(139, 92, 246, 0.42);
+      box-shadow: 0 -6px 22px rgba(0, 0, 0, 0.32), 0 0 34px rgba(139, 92, 246, 0.12);
+    }
+
+    .footer-inner {
+      width: min(1120px, 92%);
+      margin-inline: auto;
+      padding: 1.2rem 0 1rem;
+      display: grid;
+      gap: 0.95rem;
+      justify-items: center;
+      text-align: center;
+    }
+
+    .social-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.72rem;
+      list-style: none;
+    }
+
+    .social-link {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      display: grid;
+      place-items: center;
+      color: #f8fafc;
+      background: linear-gradient(140deg, rgba(139, 92, 246, 0.28), rgba(236, 72, 153, 0.28));
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .social-link:hover,
+    .social-link:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(236, 72, 153, 0.64);
+      box-shadow: 0 0 18px rgba(236, 72, 153, 0.38);
+      outline: none;
+    }
+
+    .social-link svg {
+      width: 19px;
+      height: 19px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .footer-email a {
+      color: #e9d5ff;
+      font-weight: 700;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(236, 72, 153, 0.5);
+      padding-bottom: 0.1rem;
+    }
+
+    .footer-email a:hover,
+    .footer-email a:focus-visible {
+      color: #fbcfe8;
+      outline: none;
+    }
+
+    .copyright {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .reveal-on-scroll {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 700ms ease, transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal-on-scroll.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 980px) {
+      .booking {
+        grid-template-columns: 1fr;
+      }
+
+      .intro {
+        position: static;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .nav-inner {
+        flex-direction: column;
+        gap: 0.6rem;
+        padding: 0.8rem 0;
+      }
+
+      .menu {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      input,
+      select,
+      textarea,
+      .submit-btn,
+      .close-modal-btn {
+        min-height: 48px;
+        font-size: 16px;
+      }
+
+      textarea {
+        min-height: 140px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal-on-scroll,
+      .reveal-on-scroll.is-visible {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+
+      .loader-logo,
+      .loader-progress,
+      .bg,
+      h1,
+      .form-shell,
+      .status.success {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-loader" id="pageLoader" aria-label="Page is loading" role="status">
+    <div class="loader-content">
+      <p class="loader-logo">DJ Carlos</p>
+      <div class="loader-bar" aria-hidden="true">
+        <div class="loader-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg" aria-hidden="true"></div>
+  <div class="mesh" aria-hidden="true"></div>
+
+  <nav>
+    <div class="container nav-inner">
+      <a class="logo" href="index.html">DJ CARLOS</a>
+      <ul class="menu" aria-label="Main Navigation">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="mixes.html">Mixes</a></li>
+        <li><a href="booking.html" aria-current="page">Book</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container booking">
+    <section class="intro" aria-label="Booking intro">
+      <p class="kicker">Event Inquiry</p>
+      <h1>Book DJ Carlos</h1>
+      <p class="lead">Tell me about your event and I will get back to you with availability, package options, and the right vibe for your crowd.</p>
+      <ul class="booking-list" aria-label="Booking highlights">
+        <li><span class="dot" aria-hidden="true"></span>Response within 24-48 hours</li>
+        <li><span class="dot" aria-hidden="true"></span>Custom sets for every event type</li>
+        <li><span class="dot" aria-hidden="true"></span>Travel options available by request</li>
+      </ul>
+    </section>
+
+    <section class="form-shell" aria-label="Booking form">
+      <form id="bookingForm" action="https://formspree.io/f/maqkdlwq" method="POST">
+        <div class="form-grid">
+          <div class="field">
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" autocomplete="name" required />
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required />
+          </div>
+
+          <div class="field">
+            <label for="eventDate">Event Date</label>
+            <input id="eventDate" name="eventDate" type="date" required />
+          </div>
+
+          <div class="field">
+            <label for="eventType">Event Type</label>
+            <select id="eventType" name="eventType" required>
+              <option value="" disabled selected>Select event type</option>
+              <option value="Wedding">Wedding</option>
+              <option value="Corporate">Corporate</option>
+              <option value="Club Night">Club Night</option>
+              <option value="Private Party">Private Party</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="venueName">Venue Name</label>
+            <input id="venueName" name="venueName" type="text" required />
+          </div>
+
+          <div class="field">
+            <label for="budgetRange">Budget Range</label>
+            <select id="budgetRange" name="budgetRange" required>
+              <option value="" disabled selected>Select budget range</option>
+              <option value="Under $500">Under $500</option>
+              <option value="$500-$1,000">$500-$1,000</option>
+              <option value="$1,000-$2,500">$1,000-$2,500</option>
+              <option value="$2,500+">$2,500+</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label for="additionalDetails">Additional Details</label>
+            <textarea id="additionalDetails" name="additionalDetails" placeholder="Music style, expected crowd size, set length, special requests..."></textarea>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="submit-btn" id="submitBtn" type="submit">
+            <span class="btn-spinner" aria-hidden="true"></span>
+            <span id="submitBtnLabel">Send Booking Request</span>
+          </button>
+          <p id="formStatus" class="status" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer" aria-label="Site footer">
+    <div class="footer-inner">
+      <ul class="social-links" aria-label="Social media links">
+        <li>
+          <a class="social-link" href="https://soundcloud.com" target="_blank" rel="noopener noreferrer" aria-label="SoundCloud">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 14.5a2.5 2.5 0 0 1 2.4-2.5 3.8 3.8 0 0 1 7.3-1.4 3 3 0 1 1 1 5.9H6.3A2.3 2.3 0 0 1 4 14.5Z" />
+              <path d="M8 12.2v3.8" />
+              <path d="M10.6 11.5v4.5" />
+              <path d="M13.2 11v5" />
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a class="social-link" href="https://spotify.com" target="_blank" rel="noopener noreferrer" aria-label="Spotify">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M8 10.2c2.3-.8 5.7-.7 8 .4" />
+              <path d="M8.5 12.9c2-.6 4.5-.5 6.6.4" />
+              <path d="M9.2 15.3c1.4-.3 3-.2 4.4.4" />
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a class="social-link" href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4.5" y="4.5" width="15" height="15" rx="4" />
+              <circle cx="12" cy="12" r="3.6" />
+              <circle cx="16.8" cy="7.3" r="0.8" fill="currentColor" stroke="none" />
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a class="social-link" href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3.5" y="6.8" width="17" height="10.4" rx="3" />
+              <path d="M10.2 9.6 15 12l-4.8 2.4Z" fill="currentColor" stroke="none" />
+            </svg>
+          </a>
+        </li>
+      </ul>
+      <p class="footer-email"><a href="mailto:carlos@djcarlosmusic.com">carlos@djcarlosmusic.com</a></p>
+      <p class="copyright">&copy; 2026 DJ Carlos. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <div id="confirmationModal" class="confirmation-modal" role="dialog" aria-modal="true" aria-labelledby="confirmationTitle" aria-describedby="confirmationBody">
+    <div class="confirmation-card">
+      <div class="confirmation-icon" aria-hidden="true">✓</div>
+      <h2 id="confirmationTitle" class="confirmation-title">Booking Request Sent!</h2>
+      <p id="confirmationBody" class="confirmation-body">Carlos will review your request and get back to you within 24 hours.</p>
+      <button id="closeModalBtn" class="close-modal-btn" type="button">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const pageLoader = document.getElementById("pageLoader");
+
+    window.addEventListener("load", () => {
+      requestAnimationFrame(() => {
+        pageLoader.classList.add("is-hidden");
+      });
+    });
+
+    const setupScrollReveal = () => {
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (prefersReducedMotion || !("IntersectionObserver" in window)) {
+        return;
+      }
+
+      const revealTargets = document.querySelectorAll(".booking > .intro, .booking > .form-shell, .site-footer .footer-inner");
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.16,
+        rootMargin: "0px 0px -10% 0px"
+      });
+
+      revealTargets.forEach((target) => {
+        target.classList.add("reveal-on-scroll");
+        observer.observe(target);
+      });
+    };
+
+    setupScrollReveal();
+
+    const form = document.getElementById("bookingForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const submitBtnLabel = document.getElementById("submitBtnLabel");
+    const formStatus = document.getElementById("formStatus");
+    const eventDateInput = document.getElementById("eventDate");
+    const confirmationModal = document.getElementById("confirmationModal");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const defaultSubmitLabel = "Send Booking Request";
+
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
+    eventDateInput.min = `${yyyy}-${mm}-${dd}`;
+
+    const setSubmittingState = (isSubmitting) => {
+      submitBtn.disabled = isSubmitting;
+      submitBtn.classList.toggle("is-loading", isSubmitting);
+      submitBtn.setAttribute("aria-busy", String(isSubmitting));
+      submitBtnLabel.textContent = isSubmitting ? "Sending..." : defaultSubmitLabel;
+    };
+
+    const showConfirmationModal = () => {
+      confirmationModal.classList.add("is-open");
+      document.body.style.overflow = "hidden";
+      closeModalBtn.focus();
+    };
+
+    const reloadForAnotherSubmission = () => {
+      window.location.reload();
+    };
+
+    closeModalBtn.addEventListener("click", () => {
+      reloadForAnotherSubmission();
+    });
+
+    confirmationModal.addEventListener("click", (event) => {
+      if (event.target === confirmationModal) {
+        reloadForAnotherSubmission();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && confirmationModal.classList.contains("is-open")) {
+        reloadForAnotherSubmission();
+      }
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (submitBtn.disabled) {
+        return;
+      }
+
+      setSubmittingState(true);
+      formStatus.textContent = "Sending your request...";
+      formStatus.className = "status";
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: {
+            Accept: "application/json"
+          }
+        });
+
+        if (response.ok) {
+          setSubmittingState(false);
+          form.reset();
+          formStatus.textContent = "";
+          formStatus.className = "status";
+          showConfirmationModal();
+        } else {
+          setSubmittingState(false);
+          formStatus.textContent = "Could not send the form right now. Please try again in a moment.";
+          formStatus.className = "status error";
+        }
+      } catch (error) {
+        setSubmittingState(false);
+        formStatus.textContent = "Network error while sending. Please check your connection and try again.";
+        formStatus.className = "status error";
+      }
+    });
+  </script>
+</body>
+</html>

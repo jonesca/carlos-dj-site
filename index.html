@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DJ Carlos | Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0D0D0D;
+      --electric-purple: #8B5CF6;
+      --hot-pink: #EC4899;
+      --white: #F8FAFC;
+      --muted: #CBD5E1;
+      --glass: rgba(255, 255, 255, 0.06);
+      --border: rgba(255, 255, 255, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      font-family: "Manrope", sans-serif;
+      color: var(--white);
+      background: var(--bg);
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    .page-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+      background: rgba(7, 6, 12, 0.96);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      transition: opacity 560ms ease, visibility 560ms ease;
+    }
+
+    .page-loader.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-content {
+      text-align: center;
+    }
+
+    .loader-logo {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(2.8rem, 9vw, 5rem);
+      letter-spacing: 0.1em;
+      line-height: 0.9;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      text-shadow:
+        0 0 8px rgba(236, 72, 153, 0.82),
+        0 0 24px rgba(139, 92, 246, 0.85),
+        0 0 44px rgba(236, 72, 153, 0.4);
+      animation: loaderGlow 1.5s ease-in-out infinite;
+    }
+
+    .loader-bar {
+      width: min(280px, 64vw);
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .loader-progress {
+      width: 45%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--electric-purple), var(--hot-pink));
+      animation: loaderSweep 1.05s ease-in-out infinite;
+    }
+
+    @keyframes loaderGlow {
+      0%,
+      100% {
+        text-shadow:
+          0 0 8px rgba(236, 72, 153, 0.82),
+          0 0 24px rgba(139, 92, 246, 0.85),
+          0 0 44px rgba(236, 72, 153, 0.4);
+      }
+      50% {
+        text-shadow:
+          0 0 11px rgba(236, 72, 153, 1),
+          0 0 30px rgba(139, 92, 246, 1),
+          0 0 52px rgba(236, 72, 153, 0.52);
+      }
+    }
+
+    @keyframes loaderSweep {
+      0% {
+        transform: translateX(-115%);
+      }
+      100% {
+        transform: translateX(240%);
+      }
+    }
+
+    .bg {
+      position: fixed;
+      inset: -20%;
+      z-index: -2;
+      background:
+        radial-gradient(circle at 20% 25%, rgba(139, 92, 246, 0.42), transparent 48%),
+        radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.36), transparent 52%),
+        radial-gradient(circle at 60% 20%, rgba(139, 92, 246, 0.24), transparent 45%),
+        var(--bg);
+      filter: blur(14px) saturate(120%);
+      animation: drift 14s ease-in-out infinite alternate;
+    }
+
+    .mesh {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      -webkit-mask-image: radial-gradient(circle at center, black 45%, transparent 92%);
+      mask-image: radial-gradient(circle at center, black 45%, transparent 92%);
+      pointer-events: none;
+    }
+
+    @keyframes drift {
+      0% {
+        transform: translate3d(-2%, -1%, 0) scale(1);
+      }
+      50% {
+        transform: translate3d(3%, 2%, 0) scale(1.08);
+      }
+      100% {
+        transform: translate3d(-1%, 4%, 0) scale(1.02);
+      }
+    }
+
+    .container {
+      width: min(1120px, 92%);
+      margin-inline: auto;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      background: rgba(13, 13, 13, 0.55);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 74px;
+    }
+
+    .logo {
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.06em;
+      font-size: 1.4rem;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .menu {
+      display: flex;
+      gap: 1.4rem;
+      list-style: none;
+      font-weight: 700;
+    }
+
+    .menu a {
+      text-decoration: none;
+      color: var(--white);
+      opacity: 0.85;
+      transition: opacity 0.2s ease, color 0.2s ease;
+    }
+
+    .menu a:hover,
+    .menu a:focus-visible {
+      color: var(--hot-pink);
+      opacity: 1;
+      outline: none;
+    }
+
+    .hero {
+      padding: clamp(3.5rem, 9vw, 8rem) 0 clamp(2rem, 6vw, 4rem);
+      text-align: center;
+    }
+
+    h1 {
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.08em;
+      font-size: clamp(3.8rem, 13vw, 9rem);
+      line-height: 0.95;
+      margin-bottom: 1rem;
+      color: #fdfdff;
+      text-shadow:
+        0 0 6px rgba(236, 72, 153, 0.8),
+        0 0 18px rgba(139, 92, 246, 0.85),
+        0 0 34px rgba(139, 92, 246, 0.5),
+        0 0 52px rgba(236, 72, 153, 0.45);
+      animation: neonPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes neonPulse {
+      0%,
+      100% {
+        text-shadow:
+          0 0 7px rgba(236, 72, 153, 0.78),
+          0 0 22px rgba(139, 92, 246, 0.8),
+          0 0 40px rgba(139, 92, 246, 0.42),
+          0 0 60px rgba(236, 72, 153, 0.35);
+      }
+      50% {
+        text-shadow:
+          0 0 10px rgba(236, 72, 153, 1),
+          0 0 28px rgba(139, 92, 246, 1),
+          0 0 52px rgba(139, 92, 246, 0.65),
+          0 0 72px rgba(236, 72, 153, 0.52);
+      }
+    }
+
+    .tagline {
+      max-width: 620px;
+      margin-inline: auto;
+      font-size: clamp(1rem, 2.4vw, 1.35rem);
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .book-btn {
+      display: inline-block;
+      border: none;
+      text-decoration: none;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      font-size: clamp(1rem, 2.3vw, 1.15rem);
+      color: white;
+      background: linear-gradient(120deg, var(--electric-purple), var(--hot-pink));
+      border-radius: 999px;
+      padding: 0.95rem 2.2rem;
+      box-shadow:
+        0 12px 28px rgba(139, 92, 246, 0.34),
+        0 0 22px rgba(236, 72, 153, 0.42);
+      transform: translateZ(0);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+    }
+
+    .book-btn:hover,
+    .book-btn:focus-visible {
+      transform: translateY(-2px) scale(1.03);
+      filter: brightness(1.08);
+      box-shadow:
+        0 14px 32px rgba(139, 92, 246, 0.4),
+        0 0 30px rgba(236, 72, 153, 0.56);
+      outline: none;
+    }
+
+    .gigs {
+      padding: clamp(1rem, 4vw, 2rem) 0 4rem;
+    }
+
+    .gigs h2 {
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      margin-bottom: 1.2rem;
+      letter-spacing: 0.03em;
+    }
+
+    .scroll-wrap {
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+      mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+    }
+
+    .scroll-track {
+      display: flex;
+      gap: 1rem;
+      width: max-content;
+      animation: slideCards 24s linear infinite;
+      padding-bottom: 0.4rem;
+    }
+
+    .scroll-wrap:hover .scroll-track {
+      animation-play-state: paused;
+    }
+
+    @keyframes slideCards {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    .gig-card {
+      min-width: clamp(220px, 28vw, 320px);
+      padding: 1.05rem 1rem;
+      border-radius: 16px;
+      background: linear-gradient(155deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
+      border: 1px solid var(--border);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 16px 40px rgba(0, 0, 0, 0.35);
+      transform: translateY(0) scale(1);
+      transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+      will-change: transform;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .gig-card:hover {
+        transform: translateY(-7px) scale(1.03);
+        border-color: rgba(236, 72, 153, 0.5);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.2),
+          0 26px 54px rgba(0, 0, 0, 0.5),
+          0 0 26px rgba(236, 72, 153, 0.45);
+      }
+    }
+
+    @media (hover: none), (pointer: coarse) {
+      .gig-card.is-touch-active {
+        transform: translateY(-5px) scale(1.03);
+        border-color: rgba(236, 72, 153, 0.5);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.2),
+          0 22px 48px rgba(0, 0, 0, 0.48),
+          0 0 24px rgba(236, 72, 153, 0.42);
+      }
+    }
+
+    .gig-date {
+      font-size: 0.9rem;
+      color: #f5d0fe;
+      font-weight: 700;
+      margin-bottom: 0.45rem;
+    }
+
+    .gig-venue {
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin-bottom: 0.3rem;
+    }
+
+    .gig-type {
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .site-footer {
+      margin-top: 2.2rem;
+      background: rgba(10, 10, 16, 0.92);
+      border-top: 1px solid rgba(236, 72, 153, 0.42);
+      border-bottom: 1px solid rgba(139, 92, 246, 0.42);
+      box-shadow: 0 -6px 22px rgba(0, 0, 0, 0.32), 0 0 34px rgba(139, 92, 246, 0.12);
+    }
+
+    .footer-inner {
+      width: min(1120px, 92%);
+      margin-inline: auto;
+      padding: 1.2rem 0 1rem;
+      display: grid;
+      gap: 0.95rem;
+      justify-items: center;
+      text-align: center;
+    }
+
+    .social-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.72rem;
+      list-style: none;
+    }
+
+    .social-link {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      display: grid;
+      place-items: center;
+      color: #f8fafc;
+      background: linear-gradient(140deg, rgba(139, 92, 246, 0.28), rgba(236, 72, 153, 0.28));
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .social-link:hover,
+    .social-link:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(236, 72, 153, 0.64);
+      box-shadow: 0 0 18px rgba(236, 72, 153, 0.38);
+      outline: none;
+    }
+
+    .social-link svg {
+      width: 19px;
+      height: 19px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .footer-email a {
+      color: #e9d5ff;
+      font-weight: 700;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(236, 72, 153, 0.5);
+      padding-bottom: 0.1rem;
+    }
+
+    .footer-email a:hover,
+    .footer-email a:focus-visible {
+      color: #fbcfe8;
+      outline: none;
+    }
+
+    .copyright {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .reveal-on-scroll {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 700ms ease, transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal-on-scroll.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 760px) {
+      .nav-inner {
+        flex-direction: column;
+        gap: 0.6rem;
+        padding: 0.8rem 0;
+      }
+
+      .menu {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .scroll-wrap {
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-mask-image: none;
+        mask-image: none;
+        padding-bottom: 0.25rem;
+      }
+
+      .scroll-track {
+        animation: none;
+        width: max-content;
+      }
+
+      .scroll-wrap::-webkit-scrollbar {
+        height: 8px;
+      }
+
+      .scroll-wrap::-webkit-scrollbar-thumb {
+        background: linear-gradient(120deg, var(--electric-purple), var(--hot-pink));
+        border-radius: 999px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal-on-scroll,
+      .reveal-on-scroll.is-visible {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+
+      .loader-logo,
+      .loader-progress,
+      .bg,
+      .scroll-track,
+      h1 {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-loader" id="pageLoader" aria-label="Page is loading" role="status">
+    <div class="loader-content">
+      <p class="loader-logo">DJ Carlos</p>
+      <div class="loader-bar" aria-hidden="true">
+        <div class="loader-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg" aria-hidden="true"></div>
+  <div class="mesh" aria-hidden="true"></div>
+
+  <nav>
+    <div class="container nav-inner">
+      <a class="logo" href="index.html">DJ CARLOS</a>
+      <ul class="menu" aria-label="Main Navigation">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="mixes.html">Mixes</a></li>
+        <li><a href="booking.html">Book</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero container">
+      <h1>DJ CARLOS</h1>
+      <p class="tagline">Bringing the Beat to Mexico City &amp; Beyond.</p>
+      <a class="book-btn" href="booking.html">Book Now</a>
+    </section>
+
+    <section class="gigs container" aria-labelledby="upcoming-gigs-title">
+      <h2 id="upcoming-gigs-title">Upcoming Gigs</h2>
+      <div class="scroll-wrap" role="region" aria-label="Upcoming gigs list">
+        <div class="scroll-track">
+          <article class="gig-card">
+            <p class="gig-date">Jun 14, 2026</p>
+            <p class="gig-venue">Azul Rooftop, CDMX</p>
+            <p class="gig-type">Sunset House Set</p>
+          </article>
+          <article class="gig-card">
+            <p class="gig-date">Jun 28, 2026</p>
+            <p class="gig-venue">Pulse Arena, Guadalajara</p>
+            <p class="gig-type">Festival Main Stage</p>
+          </article>
+          <article class="gig-card">
+            <p class="gig-date">Jul 05, 2026</p>
+            <p class="gig-venue">Luna Club, Monterrey</p>
+            <p class="gig-type">Late Night Tech House</p>
+          </article>
+          <article class="gig-card">
+            <p class="gig-date">Jul 19, 2026</p>
+            <p class="gig-venue">Malecon Nights, Veracruz</p>
+            <p class="gig-type">Beach Party Set</p>
+          </article>
+          <article class="gig-card">
+            <p class="gig-date">Aug 02, 2026</p>
+            <p class="gig-venue">Neo Warehouse, Puebla</p>
+            <p class="gig-type">Underground Rave</p>
+          </article>
+
+          <article class="gig-card" aria-hidden="true">
+            <p class="gig-date">Jun 14, 2026</p>
+            <p class="gig-venue">Azul Rooftop, CDMX</p>
+            <p class="gig-type">Sunset House Set</p>
+          </article>
+          <article class="gig-card" aria-hidden="true">
+            <p class="gig-date">Jun 28, 2026</p>
+            <p class="gig-venue">Pulse Arena, Guadalajara</p>
+            <p class="gig-type">Festival Main Stage</p>
+          </article>
+          <article class="gig-card" aria-hidden="true">
+            <p class="gig-date">Jul 05, 2026</p>
+            <p class="gig-venue">Luna Club, Monterrey</p>
+            <p class="gig-type">Late Night Tech House</p>
+          </article>
+          <article class="gig-card" aria-hidden="true">
+            <p class="gig-date">Jul 19, 2026</p>
+            <p class="gig-venue">Malecon Nights, Veracruz</p>
+            <p class="gig-type">Beach Party Set</p>
+          </article>
+          <article class="gig-card" aria-hidden="true">
+            <p class="gig-date">Aug 02, 2026</p>
+            <p class="gig-venue">Neo Warehouse, Puebla</p>
+            <p class="gig-type">Underground Rave</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" aria-label="Site footer">
+    <div class="footer-inner">
+      <ul class="social-links" aria-label="Social media links">
+        <li>
+          <a class="social-link" href="https://soundcloud.com" target="_blank" rel="noopener noreferrer" aria-label="SoundCloud">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 14.5a2.5 2.5 0 0 1 2.4-2.5 3.8 3.8 0 0 1 7.3-1.4 3 3 0 1 1 1 5.9H6.3A2.3 2.3 0 0 1 4 14.5Z" />
+              <path d="M8 12.2v3.8" />
+              <path d="M10.6 11.5v4.5" />
+              <path d="M13.2 11v5" />
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a class="social-link" href="https://spotify.com" target="_blank" rel="noopener noreferrer" aria-label="Spotify">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M8 10.2c2.3-.8 5.7-.7 8 .4" />
+              <path d="M8.5 12.9c2-.6 4.5-.5 6.6.4" />
+              <path d="M9.2 15.3c1.4-.3 3-.2 4.4.4" />
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a class="social-link" href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4.5" y="4.5" width="15" height="15" rx="4" />
+              <circle cx="12" cy="12" r="3.6" />
+              <circle cx="16.8" cy="7.3" r="0.8" fill="currentColor" stroke="none" />
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a class="social-link" href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3.5" y="6.8" width="17" height="10.4" rx="3" />
+              <path d="M10.2 9.6 15 12l-4.8 2.4Z" fill="currentColor" stroke="none" />
+            </svg>
+          </a>
+        </li>
+      </ul>
+      <p class="footer-email"><a href="mailto:carlos@djcarlosmusic.com">carlos@djcarlosmusic.com</a></p>
+      <p class="copyright">&copy; 2026 DJ Carlos. All rights reserved.</p>
+    </div>
+  </footer>
+
+<script>
+  const pageLoader = document.getElementById("pageLoader");
+
+  window.addEventListener("load", () => {
+    requestAnimationFrame(() => {
+      pageLoader.classList.add("is-hidden");
+    });
+  });
+
+  const setupScrollReveal = () => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      return;
+    }
+
+    const revealTargets = [
+      ...document.querySelectorAll(".hero, .gigs h2, .site-footer .footer-inner")
+    ];
+
+    const staggerCards = document.querySelectorAll('.gigs .gig-card:not([aria-hidden="true"])');
+    staggerCards.forEach((card, index) => {
+      card.style.transitionDelay = `${index * 90}ms`;
+      revealTargets.push(card);
+    });
+
+    if (!("IntersectionObserver" in window)) {
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.16,
+      rootMargin: "0px 0px -10% 0px"
+    });
+
+    revealTargets.forEach((target) => {
+      target.classList.add("reveal-on-scroll");
+      observer.observe(target);
+    });
+  };
+
+  setupScrollReveal();
+
+  const gigCards = document.querySelectorAll(".gig-card");
+  const isCoarsePointer = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+
+  const clearTouchState = (card) => {
+    card.classList.remove("is-touch-active");
+  };
+
+  if (isCoarsePointer) {
+    gigCards.forEach((card) => {
+      card.addEventListener("touchstart", () => {
+        card.classList.add("is-touch-active");
+      }, { passive: true });
+
+      card.addEventListener("touchend", () => {
+        clearTouchState(card);
+      }, { passive: true });
+
+      card.addEventListener("touchcancel", () => {
+        clearTouchState(card);
+      }, { passive: true });
+    });
+  }
+</script>
+</body>
+</html>
